@@ -52,6 +52,8 @@ pixelchat:
 # =================== 聊天守卫模块 =============================
 
 chatguard:
+  no-private-message-commands: "未配置私信命令。私信审核已被禁用。"
+
   cleared-strikes-on-server-restart: "玩家违规记录已重置。若要在服务器重启后保留记录，请在配置文件中调整相应设置。"
 
   player:

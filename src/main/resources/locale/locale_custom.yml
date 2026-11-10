@@ -54,6 +54,8 @@ pixelchat:
 # =================== ChatGuard Module =======================
 
 chatguard:
+  no-private-message-commands: ""
+
   cleared-strikes-on-server-restart: ""
 
   player:

@@ -26,6 +26,18 @@ public final class APIConstants {
     }
 
     /**
+     * Timeouts in milliseconds. Without them a hanging API keeps a request open forever,
+     * and a held back private message would never be delivered.
+     */
+    public static final class Connection {
+        public static final int CONNECT_TIMEOUT_MS = 5000;
+        public static final int READ_TIMEOUT_MS = 10000;
+
+        private Connection() {
+        }
+    }
+
+    /**
      * Detection result keys for content analysis
      */
     public static final class DetectionFlags {

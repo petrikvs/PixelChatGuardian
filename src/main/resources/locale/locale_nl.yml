@@ -52,6 +52,8 @@ pixelchat:
 # =================== ChatGuard Module =======================
 
 chatguard:
+  no-private-message-commands: "Er zijn geen commando's voor privéberichten geconfigureerd. De moderatie van privéberichten is uitgeschakeld."
+
   cleared-strikes-on-server-restart: "Spelerwaarschuwingen zijn gereset. Om ze te behouden na serverherstart, pas de bijbehorende instelling aan in het configuratiebestand."
 
   player:

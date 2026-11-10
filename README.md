@@ -15,6 +15,8 @@ chat formatting, and integrate seamlessly with your existing setup.
 - **Multi-Language Support**: Automatically moderates messages in multiple languages
 - **Configurable Rules**: Control what gets filtered (offensive language, personal info, websites, etc.)
 - **Flexible Actions**: Choose to censor or block messages entirely
+- **Private Message Moderation**: Private messages (`/msg`, `/tell`, `/m`, `/r`, `/me` and others) are checked with the
+  same rules as the public chat
 - **Strike System**: Automatic punishment system with kick/ban thresholds
 
 ### 💬 Enhanced Chat Experience

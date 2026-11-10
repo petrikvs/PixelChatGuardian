@@ -52,6 +52,8 @@ pixelchat:
 # =================== ChatGuard Modul ========================
 
 chatguard:
+  no-private-message-commands: "Es sind keine Befehle für private Nachrichten konfiguriert. Die Moderation privater Nachrichten wurde deaktiviert."
+
   cleared-strikes-on-server-restart: "Spielerstrafen wurden zurückgesetzt. Um sie nach Server-Neustarts beizubehalten, passe die entsprechende Einstellung in der Konfigurationsdatei an."
 
   player:

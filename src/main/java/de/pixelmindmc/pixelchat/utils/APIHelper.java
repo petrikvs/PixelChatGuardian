@@ -94,6 +94,8 @@ public class APIHelper {
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Authorization", "Bearer " + apiKey);
+        connection.setConnectTimeout(APIConstants.Connection.CONNECT_TIMEOUT_MS);
+        connection.setReadTimeout(APIConstants.Connection.READ_TIMEOUT_MS);
         connection.setDoOutput(true);
         return connection;
     }

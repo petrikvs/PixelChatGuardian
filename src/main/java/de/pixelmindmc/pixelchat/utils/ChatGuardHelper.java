@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +39,19 @@ public class ChatGuardHelper {
      * @param messageHandling The message handling mode: "BLOCK", "CENSOR", or "SILENT"
      */
     public static void notifyAndStrikePlayer(@NotNull PixelChat plugin, @NotNull Player player, @NotNull String userMessage, @NotNull MessageClassification classification, @NotNull String messageHandling) {
+        notifyAndStrikePlayer(plugin, player, userMessage, classification, messageHandling, null);
+    }
+
+    /**
+     * Notifies the player of their message being blocked, logs the block itself, and also applies the strike system
+     *
+     * @param player          The player that sent the message
+     * @param userMessage     The message that the user sent
+     * @param classification  The classification of the message
+     * @param messageHandling The message handling mode: "BLOCK", "CENSOR", or "SILENT"
+     * @param origin          Where the message was sent, e.g. "private message", or {@code null} for the public chat
+     */
+    public static void notifyAndStrikePlayer(@NotNull PixelChat plugin, @NotNull Player player, @NotNull String userMessage, @NotNull MessageClassification classification, @NotNull String messageHandling, @Nullable String origin) {
         // Debug logger message
         plugin.getLoggingHelper().debug("Notify player");
 
@@ -57,7 +71,8 @@ public class ChatGuardHelper {
             case "SILENT" -> "silently moderated";
             default -> "censored";
         };
-        plugin.getLoggingHelper().info("Message by " + player.getName() + " has been " + action + ": " + userMessage);
+        plugin.getLoggingHelper()
+                .info("Message by " + player.getName() + " has been " + action + (origin == null ? "" : " (" + origin + ")") + ": " + userMessage);
 
         if (!classification.isOffensiveLanguage()) return;
 

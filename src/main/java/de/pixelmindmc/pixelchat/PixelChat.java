@@ -12,6 +12,7 @@ import de.pixelmindmc.pixelchat.constants.ConfigConstants;
 import de.pixelmindmc.pixelchat.constants.LangConstants;
 import de.pixelmindmc.pixelchat.listener.AsyncPlayerChatListener;
 import de.pixelmindmc.pixelchat.listener.PlayerJoinListener;
+import de.pixelmindmc.pixelchat.listener.PrivateMessageListener;
 import de.pixelmindmc.pixelchat.utils.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.PluginManager;
@@ -241,6 +242,7 @@ public final class PixelChat extends JavaPlugin {
 
         pluginManager.registerEvents(new PlayerJoinListener(this), this);
         pluginManager.registerEvents(new AsyncPlayerChatListener(this), this);
+        pluginManager.registerEvents(new PrivateMessageListener(this), this);
     }
 
 

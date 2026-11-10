@@ -76,6 +76,7 @@ public final class LangConstants {
         public static final String PLAYER_KICK = "chatguard.player.kick";
         public static final String PLAYER_TEMP_BAN = "chatguard.player.ban-temporary";
         public static final String PLAYER_PERM_BAN = "chatguard.player.ban-permanent";
+        public static final String NO_PRIVATE_MESSAGE_COMMANDS = "chatguard.no-private-message-commands";
 
         private ChatGuard() {
         }

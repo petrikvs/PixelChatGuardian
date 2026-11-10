@@ -82,6 +82,15 @@ public final class ConfigConstants {
             }
         }
 
+        public static final class PrivateMessages {
+            public static final String ENABLED = "chatguard.private-messages.enabled";
+            public static final String COMMANDS = "chatguard.private-messages.commands";
+            public static final String MESSAGE_ONLY_COMMANDS = "chatguard.private-messages.message-only-commands";
+
+            private PrivateMessages() {
+            }
+        }
+
         public static final class Rules {
             public static final String BLOCK_OFFENSIVE_LANGUAGE = "chatguard.rules.block-offensive-language";
             public static final String BLOCK_USERNAMES = "chatguard.rules.block-usernames";

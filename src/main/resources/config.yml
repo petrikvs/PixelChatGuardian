@@ -158,6 +158,39 @@ chatguard:
   # Default: true
   notify-user: true
 
+  # Moderate private messages (/msg, /tell, /m, ...)
+  # They are checked with the same rules and handling as the public chat.
+  # Default: true
+  private-messages:
+
+    # Check private messages before they are delivered
+    # The command runs one server tick later, once the AI has classified the message
+    # Default: true
+    enabled: true
+
+    # Commands of the form /<command> <player> <message>
+    # Namespaces are ignored, so "essentials:msg" is matched by "msg" as well
+    # Default: [msg, tell, m, w, whisper, t, message, pm, emsg, etell]
+    commands:
+      - msg
+      - tell
+      - m
+      - w
+      - whisper
+      - t
+      - message
+      - pm
+      - emsg
+      - etell
+
+    # Commands of the form /<command> <message> without a player in the command
+    # /me is public chat sent as a command, so it is moderated here
+    # Default: [r, reply, me]
+    message-only-commands:
+      - r
+      - reply
+      - me
+
   # Content filtering rules
   rules:
 

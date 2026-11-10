@@ -52,6 +52,8 @@ pixelchat:
 # =================== 聊天守衛模組 =============================
 
 chatguard:
+  no-private-message-commands: "未設定私訊指令。私訊審核已被停用。"
+
   cleared-strikes-on-server-restart: "玩家違規記錄已重置。若要在伺服器重啟後保留記錄，請在設定檔中調整相應設定。"
 
   player:

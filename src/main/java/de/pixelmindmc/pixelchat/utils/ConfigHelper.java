@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -145,6 +146,16 @@ public class ConfigHelper {
      */
     public int getInt(@NotNull String path) {
         return fileConfiguration.getInt(path);
+    }
+
+    /**
+     * Retrieve a string list from the config
+     *
+     * @param path The path of the value
+     * @return The string list, or an empty list if the value is missing
+     */
+    public @NotNull List<String> getStringList(@NotNull String path) {
+        return fileConfiguration.getStringList(path);
     }
 
     /**

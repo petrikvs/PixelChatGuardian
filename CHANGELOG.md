@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.2.0] - _Latest stable release_ 04.03.2026
+## [1.4.0] - 10.11.2026
+
+### ✨ Added
+
+- Moderation of private messages (`/msg`, `/tell`, `/m`, `/w`, `/whisper`, `/r`, `/me` and others).
+  Private messages are checked with the same rules, handling modes and strike system as the public chat.
+  The list of commands is configurable under `chatguard.private-messages`
+
+### 🔧 Changed
+
+- The API request now has a connect and a read timeout, so a hanging API can no longer stall moderation
+
+---
+
+## [1.2.0] - 04.03.2026
 
 ### ✨ Added
 
