@@ -13,6 +13,7 @@ import de.pixelmindmc.pixelchat.exceptions.MessageClassificationException;
 import de.pixelmindmc.pixelchat.model.MessageClassification;
 import de.pixelmindmc.pixelchat.utils.ChatGuardHelper;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,6 +48,11 @@ public class PrivateMessageListener implements Listener {
      */
     private static final ThreadLocal<Boolean> REPLAYING = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
+    /**
+     * How a silently moderated private message looks to its sender, matching the EssentialsX message format
+     */
+    private static final String DEFAULT_ECHO_FORMAT = "&6[&c%self%&6 -> &c%recipient%&6] &r%message%";
+
     private final @NotNull PixelChat plugin;
     private final boolean enabled;
 
@@ -71,13 +77,21 @@ public class PrivateMessageListener implements Listener {
     private final @NotNull Set<UUID> processing = new HashSet<>();
 
     /**
+     * The player each player last exchanged a private message with, used to name the recipient of /r.
+     * Only ever touched by the server thread.
+     */
+    private final @NotNull Map<UUID, String> lastPartner = new HashMap<>();
+
+    /**
      * A private message that has been held back until the AI has classified it
      *
      * @param rawCommand The command as the player typed it, without the leading slash
      * @param head       Everything in front of the message, including the trailing space
      * @param message    The message itself
+     * @param recipient  The player the message is meant for, or {@code null} if the command does not name one
      */
-    private record PendingMessage(@NotNull String rawCommand, @NotNull String head, @NotNull String message) {
+    private record PendingMessage(@NotNull String rawCommand, @NotNull String head, @NotNull String message,
+                                  @Nullable String recipient) {
 
         /**
          * Rebuilds the command with the message replaced by asterisks
@@ -140,6 +154,14 @@ public class PrivateMessageListener implements Listener {
 
         // The command would be executed before the AI has answered, so it is cancelled here and replayed later
         event.setCancelled(true);
+
+        // Remember who talks to whom, so that /r can name a recipient in the fake delivery below
+        if (message.recipient() != null) {
+            lastPartner.put(player.getUniqueId(), message.recipient());
+
+            Player recipient = Bukkit.getPlayerExact(message.recipient());
+            if (recipient != null) lastPartner.put(recipient.getUniqueId(), player.getName());
+        }
 
         // Debug logger message
         plugin.getLoggingHelper().debug("Check if the private message '" + message.message() + "' from " + player.getName() + " should be blocked");
@@ -209,17 +231,49 @@ public class PrivateMessageListener implements Listener {
         String messageHandling = plugin.getConfigHelper().getString(ConfigConstants.ChatGuard.MESSAGE_HANDLING);
 
         // Same three modes as in the public chat, where anything but BLOCK and SILENT censors.
-        // SILENT cannot fake the delivery here, because the format of a private message belongs to
-        // whichever plugin handles it, so the message is dropped just like in BLOCK.
         switch (messageHandling) {
-            case "BLOCK", "SILENT" -> {
+            case "BLOCK" -> {
             }
+            case "SILENT" -> fakeDelivery(player, message);
             default -> replay(player, message.censoredCommand());
         }
 
         ChatGuardHelper.notifyAndStrikePlayer(plugin, player, message.message(), classification, messageHandling, "private message");
 
         processNext(player);
+    }
+
+    /**
+     * Shows the sender a private message line as if the message had been delivered.
+     * Only the sender sees it, the recipient never does.
+     *
+     * @param player  The player that sent the message
+     * @param message The message that was dropped
+     */
+    private void fakeDelivery(@NotNull Player player, @NotNull PendingMessage message) {
+        // The default is used when the config file predates this option, an empty format turns the fake delivery off
+        String format = plugin.getConfigHelper()
+                .getString(ConfigConstants.ChatGuard.PrivateMessages.SILENT_ECHO_FORMAT, DEFAULT_ECHO_FORMAT);
+        if (format.isEmpty()) return;
+
+        // /r does not name a recipient, so the last player this player talked to is used
+        String recipient = message.recipient() != null ? message.recipient() : lastPartner.get(player.getUniqueId());
+        if (recipient == null) return;
+
+        String line = format.replace("%self%", selfName(player)).replace("%recipient%", recipient)
+                .replace("%message%", message.message());
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
+    }
+
+    /**
+     * The word a player uses for themselves in a private message, matching the language of their client
+     *
+     * @param player The player to get the word for
+     * @return "я" for Russian clients, "me" otherwise
+     */
+    private static @NotNull String selfName(@NotNull Player player) {
+        String locale = player.getLocale();
+        return locale != null && locale.toLowerCase(Locale.ROOT).startsWith("ru") ? "я" : "me";
     }
 
     /**
@@ -263,6 +317,7 @@ public class PrivateMessageListener implements Listener {
 
         int headEnd;
         String message;
+        String recipient = null;
 
         if (recipientCommand) {
             // Skip the recipient, e.g. "Player" or a selector like "@p[distance=..5]"
@@ -270,13 +325,15 @@ public class PrivateMessageListener implements Listener {
             String afterRecipient = arguments.substring(recipientEnd);
             message = afterRecipient.stripLeading();
             if (recipientEnd == arguments.length() || message.isEmpty()) return null;
+            recipient = arguments.substring(0, recipientEnd);
             headEnd = labelEnd + (afterLabel.length() - arguments.length()) + recipientEnd + (afterRecipient.length() - message.length());
         } else {
             message = arguments;
             headEnd = labelEnd + (afterLabel.length() - arguments.length());
         }
 
-        return new PendingMessage(command.startsWith("/") ? command.substring(1) : command, body.substring(0, headEnd), message);
+        return new PendingMessage(command.startsWith("/") ? command.substring(1) : command, body.substring(0, headEnd), message,
+                recipient);
     }
 
     /**

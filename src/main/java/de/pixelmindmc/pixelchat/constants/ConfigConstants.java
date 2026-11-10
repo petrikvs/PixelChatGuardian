@@ -86,6 +86,7 @@ public final class ConfigConstants {
             public static final String ENABLED = "chatguard.private-messages.enabled";
             public static final String COMMANDS = "chatguard.private-messages.commands";
             public static final String MESSAGE_ONLY_COMMANDS = "chatguard.private-messages.message-only-commands";
+            public static final String SILENT_ECHO_FORMAT = "chatguard.private-messages.silent-echo-format";
 
             private PrivateMessages() {
             }

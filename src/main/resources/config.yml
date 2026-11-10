@@ -191,6 +191,13 @@ chatguard:
       - reply
       - me
 
+    # What the sender sees when a message is silently moderated, so that it looks delivered
+    # Placeholders: %self%, %recipient%, %message%
+    # The colours match the EssentialsX message format, %self% is "я" for Russian clients and "me" otherwise
+    # Leave empty to show nothing, as in BLOCK
+    # Default: "&6[&c%self%&6 -> &c%recipient%&6] &r%message%"
+    silent-echo-format: "&6[&c%self%&6 -> &c%recipient%&6] &r%message%"
+
   # Content filtering rules
   rules:
 

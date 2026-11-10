@@ -129,6 +129,20 @@ public class ConfigHelper {
     }
 
     /**
+     * Retrieve a string from the config, falling back to a default if the key is missing
+     * Unlike {@link #getString(String)} this does not warn about an unknown key, so a configuration
+     * file from an older version keeps working
+     *
+     * @param path         The path of the value
+     * @param defaultValue The value to use if the config has no value at the path
+     * @return The value, or the default if the config has no value at the path
+     */
+    public @NotNull String getString(@NotNull String path, @NotNull String defaultValue) {
+        String value = fileConfiguration.getString(path);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
      * Retrieve a boolean from the config
      *
      * @param path The path of the value
